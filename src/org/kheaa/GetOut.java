@@ -3,11 +3,14 @@ package org.kheaa;
 import java.awt.Rectangle;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.*;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.text.PDFTextStripper;
+
+import javax.swing.*;
 
 public class GetOut {
 
@@ -26,8 +29,24 @@ public class GetOut {
     public static void main(String[] args) {
         /*Catch an empty invocation and display usage information to the user*/
         if (args.length != 1) {
+            File inputDir = new File("./input");
+            ArrayList<String> filenames = new ArrayList<>(Arrays.asList(inputDir.list()));
+            if (!filenames.equals(null)) {
+                filenames.removeIf(p -> !p.contains(".pdf"));
+            }
+
+            try (PDDocument document = PDDocument.load(new File(filenames.get(0)))) {
+
+            } catch (IOException ioe) {
+                System.err.println("IO Error: \n" + ioe.getMessage());
+            } catch (IndexOutOfBoundsException ioobe) {
+                JOptionPane.showMessageDialog(null, "IOOBE Error: \n" + ioobe.getMessage() , "Results", JOptionPane.PLAIN_MESSAGE );
+            }
             usage();
         } else {
+
+
+
             /*use PDFbox to open the document at the provided path*/
             try (PDDocument document = PDDocument.load(new File(args[0]))) {
                 PDFTextStripper stripper = new PDFTextStripper();
@@ -112,6 +131,7 @@ public class GetOut {
     }
 
     private static void usage() {
+        JOptionPane.showMessageDialog(null, "Usage: java " + GetOut.class.getName() + " <input-pdf>" , "Results", JOptionPane.PLAIN_MESSAGE );
         System.err.println("Usage: java " + GetOut.class.getName() + " <input-pdf>");
     }
 }
