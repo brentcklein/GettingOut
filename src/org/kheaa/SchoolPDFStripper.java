@@ -1,5 +1,8 @@
 package org.kheaa;
 
+import java.awt.Rectangle;
+
+import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.text.PDFTextStripperByArea;
 import org.apache.pdfbox.text.TextPosition;
 
@@ -12,11 +15,29 @@ import java.util.List;
 
 public class SchoolPDFStripper extends PDFTextStripperByArea {
 
-    public SchoolPDFStripper() throws IOException {
+    SchoolPDFStripper(Rectangle rect) throws IOException {
         super.setShouldSeparateByBeads(false);
+        super.setSortByPosition(true);
+        addRegion("header", rect);
     }
 
     private Number prevFontSize = 0;
+
+    String getFilename(PDPage currentPage) throws IOException {
+        /*Reset the expected font size on each page*/
+        setPrevFontSize(0);
+
+        /*Extract the text from the previously defined region*/
+        extractRegions(currentPage);
+
+        /*.getTextForRegion returns the extracted text, separated by font size using "::" as a separator*/
+        /*Based on the current header, the assumption is that the first text is the school name, which*/
+        /*also has a larger font size than the following text*/
+        return getTextForRegion("header").split("::")[0]
+                .toLowerCase()
+                .replaceAll("\\s","")
+                .replaceAll("[^a-zA-Z]+", "");
+    }
 
     /**
      * Allows the font size of the previous word to be recorded. Each call to writeString only has access to the
@@ -24,9 +45,11 @@ public class SchoolPDFStripper extends PDFTextStripperByArea {
      *
      * @param prevFontSize
      */
-    public void setPrevFontSize(Number prevFontSize) {
+    private void setPrevFontSize(Number prevFontSize) {
         this.prevFontSize = prevFontSize;
     }
+
+    private Number getPrevFontSize() { return prevFontSize; }
 
     /**
      * Overriding parent method in order to insert separators ("::") between text of different font sizes
@@ -46,10 +69,10 @@ public class SchoolPDFStripper extends PDFTextStripperByArea {
 
         /* Make sure not to append the separator if prevFontSize == 0, as that means this is the first word on
         * the page */
-        if (fontSize != null && !prevFontSize.equals(0) && !fontSize.equals(prevFontSize)) {
+        if (!getPrevFontSize().equals(0) && !fontSize.equals(getPrevFontSize())) {
             builder.append("::");
         }
-        prevFontSize = fontSize;
+        setPrevFontSize(fontSize);
         builder.append(text);
         super.writeString(builder.toString());
     }
