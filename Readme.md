@@ -4,6 +4,8 @@ Java utility to handle automatically splitting PDF document with school informat
 
 ## How to use
 
+*Note: If you only need to use this utility in order to post the *Getting In* or *Adults Returning to School* publications, the utility has been deployed to `J:/OT/Josh/Help Documents/School Splitter/`, along with instructions. The source is included here in order to allow for further development.*
+
 1. Manually remove all other sections of the PDF (previous chapters, non-degree-granting schools, etc)
 2. Double click the `SchoolSplitter.jar` file
 3. Select the PDF file containing only the school information (see testpdf.pdf for an example)
