@@ -21,9 +21,13 @@ Java utility to handle automatically splitting PDF document with school informat
 ## Development
 
 Build the project and generate runnable jar:
-`mvn install`
+```
+mvn install
+```
 Run the project from the command line:
-`java -jar target/school-splitter-1.0-SNAPSHOT-jar-with-dependencies.jar path/to/input/pdf`
+```
+java -jar target/school-splitter-1.0-SNAPSHOT-jar-with-dependencies.jar path/to/input/pdf
+```
 Or double click the jar file to use the GUI.
 
 ### Prerequisites
