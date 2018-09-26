@@ -25,5 +25,8 @@ hs_err_pid*
 # IntelliJ output directory
 out/
 
+# Maven output directory
+target/
+
 # Application output directory
 output/
